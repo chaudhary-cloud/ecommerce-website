@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="checkout-page">
+
+    <div class="checkout-heading">
+
+        <p class="section-small">
+            ORDERS
+        </p>
+
+        <h1>
+            Your Orders
+        </h1>
+
+        <p>
+            View all your recent orders.
+        </p>
+
+    </div>
+
+
+    {% if orders %}
+
+    <div class="checkout-container">
+
+        <div class="checkout-form">
+
+            <h2>
+                Order History
+            </h2>
+
+            {% for order in orders %}
+
+            <div class="checkout-item">
+
+                <div>
+
+                    <h3>
+                        Order #{{ order.id }}
+                    </h3>
+
+                    <p>
+                        Customer: {{ order.customer_name }}
+                    </p>
+
+                    <p>
+                        Email: {{ order.email }}
+                    </p>
+
+                    <p>
+                        Phone: {{ order.phone }}
+                    </p>
+
+                    <p>
+                        {{ order.address }}, {{ order.city }} -
+                        {{ order.pincode }}
+                    </p>
+
+                    <p>
+                        Date: {{ order.created_at }}
+                    </p>
+
+                </div>
+
+                <strong>
+                    ₹{{ order.total_amount }}
+                </strong>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-cart">
+
+        <div class="empty-cart-icon">
+            📦
+        </div>
+
+        <h2>
+            No Orders Yet
+        </h2>
+
+        <p>
+            You have not placed any orders yet.
+        </p>
+
+        <a
+            href="{% url 'home' %}#products"
+            class="shop-btn"
+        >
+            Start Shopping
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

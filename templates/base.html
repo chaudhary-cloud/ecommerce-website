@@ -1,0 +1,101 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Store</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav class="navbar">
+
+    <div class="navbar-container">
+
+        <!-- LOGO LEFT -->
+
+        <a href="{% url 'home' %}" class="navbar-logo">
+
+            <div class="logo-icon">
+                🛍️
+            </div>
+
+            <span>My Store</span>
+
+        </a>
+
+
+        <!-- LINKS RIGHT -->
+
+        <div class="navbar-links">
+
+            <a href="{% url 'home' %}">
+                Home
+            </a>
+
+            <a href="{% url 'home' %}#products">
+                Products
+            </a>
+
+            <a href="{% url 'cart' %}" class="cart-link">
+
+                Cart
+
+                {% with cart=request.session.cart %}
+
+                    {% if cart %}
+
+                        <span class="cart-count">
+                            {{ cart|length }}
+                        </span>
+
+                    {% endif %}
+
+                {% endwith %}
+
+            </a>
+
+            <a href="{% url 'orders' %}">
+                Orders
+            </a>
+
+            <a href="{% url 'logout' %}">
+                Logout
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- =========================
+     CONTENT
+========================= -->
+
+<main>
+
+    {% block content %}
+
+    {% endblock %}
+
+</main>
+
+
+</body>
+
+</html>

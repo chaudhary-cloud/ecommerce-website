@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="cart-heading">
+
+    <p class="section-small">
+        YOUR CART
+    </p>
+
+    <h1>
+        Shopping Cart
+    </h1>
+
+    <p>
+        Review your selected products before checkout.
+    </p>
+
+</div>
+
+
+{% if cart_items %}
+
+<div class="cart-container">
+
+
+    <!-- =========================================
+         CART ITEMS
+    ========================================= -->
+
+    <div class="cart-items">
+
+        {% for item in cart_items %}
+
+        <div class="cart-card">
+
+
+            <!-- PRODUCT IMAGE -->
+
+            <div class="cart-image">
+
+                {% if item.product.image %}
+
+                    <img
+                        src="{{ item.product.image.url }}"
+                        alt="{{ item.product.name }}"
+                    >
+
+                {% else %}
+
+                    🛍️
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- PRODUCT DETAILS -->
+
+            <div class="cart-details">
+
+                <h2>
+                    {{ item.product.name }}
+                </h2>
+
+                <p class="cart-description">
+                    {{ item.product.description }}
+                </p>
+
+                <p class="cart-price">
+                    ₹{{ item.product.price }}
+                </p>
+
+
+                <!-- QUANTITY -->
+
+                <div class="quantity-box">
+
+                    <a
+                        href="{% url 'decrease_quantity' item.product.id %}"
+                        class="quantity-btn"
+                    >
+                        −
+                    </a>
+
+                    <span>
+                        {{ item.quantity }}
+                    </span>
+
+                    <a
+                        href="{% url 'increase_quantity' item.product.id %}"
+                        class="quantity-btn"
+                    >
+                        +
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT SIDE -->
+
+            <div class="cart-right">
+
+                <p class="item-total">
+                    ₹{{ item.item_total }}
+                </p>
+
+                <a
+                    href="{% url 'remove_from_cart' item.product.id %}"
+                    class="remove-btn"
+                >
+                    Remove
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- =========================================
+         CART SUMMARY
+    ========================================= -->
+
+    <div class="cart-summary">
+
+        <h2>
+            Order Summary
+        </h2>
+
+
+        <div class="summary-row">
+
+            <span>
+                Subtotal
+            </span>
+
+            <strong>
+                ₹{{ total }}
+            </strong>
+
+        </div>
+
+
+        <div class="summary-row">
+
+            <span>
+                Delivery
+            </span>
+
+            <strong>
+                FREE
+            </strong>
+
+        </div>
+
+
+        <hr>
+
+
+        <div class="summary-total">
+
+            <span>
+                Total
+            </span>
+
+            <strong>
+                ₹{{ total }}
+            </strong>
+
+        </div>
+
+
+        <!-- CHECKOUT -->
+
+        <a
+            href="{% url 'checkout' %}"
+            class="checkout-btn"
+        >
+            Proceed to Checkout
+        </a>
+
+
+        <!-- CONTINUE SHOPPING -->
+
+        <a
+            href="{% url 'home' %}"
+            class="continue-btn"
+        >
+            Continue Shopping
+        </a>
+
+    </div>
+
+</div>
+
+
+{% else %}
+
+
+<!-- =========================================
+     EMPTY CART
+========================================= -->
+
+<div class="empty-cart">
+
+    <div class="empty-cart-icon">
+        🛒
+    </div>
+
+    <h2>
+        Your Cart is Empty
+    </h2>
+
+    <p>
+        You haven't added any products to your cart yet.
+    </p>
+
+    <a
+        href="{% url 'home' %}"
+        class="shop-btn"
+    >
+        Start Shopping
+    </a>
+
+</div>
+
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<!-- =========================================
+     HERO SECTION
+========================================= -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <p class="hero-small">
+            WELCOME TO SHOPEASE
+        </p>
+
+        <h1>
+            Find Everything<br>
+            You Love.
+        </h1>
+
+        <p class="hero-description">
+            Discover amazing products at great prices.
+        </p>
+
+        <a href="#products"
+           class="hero-btn">
+
+            Shop Now
+
+        </a>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     PRODUCTS SECTION
+========================================= -->
+
+<section id="products">
+
+
+    <!-- SECTION HEADING -->
+
+    <div class="section-heading">
+
+        <p class="section-small">
+            OUR COLLECTION
+        </p>
+
+        <h2>
+            Featured Products
+        </h2>
+
+        <p>
+            Explore our latest products and find
+            something you love.
+        </p>
+
+    </div>
+
+
+
+    <!-- =========================================
+         SEARCH
+    ========================================= -->
+
+    <div class="search-box">
+
+        <form method="GET">
+
+            <input
+                type="text"
+                name="search"
+                placeholder="Search products..."
+                value="{{ request.GET.search|default:'' }}"
+            >
+
+            <button type="submit">
+                Search
+            </button>
+
+        </form>
+
+    </div>
+
+
+
+    <!-- =========================================
+         PRODUCT CONTAINER
+    ========================================= -->
+
+    <div class="product-container">
+
+
+        {% for product in products %}
+
+
+        <!-- PRODUCT CARD -->
+
+        <div class="product-card">
+
+
+            <!-- PRODUCT IMAGE -->
+
+            <div class="product-image">
+
+                {% if product.image %}
+
+                    <img
+                        src="{{ product.image.url }}"
+                        alt="{{ product.name }}"
+                    >
+
+                {% else %}
+
+                    <div class="no-image">
+                        🛍️
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+
+            <!-- PRODUCT INFORMATION -->
+
+            <div class="product-info">
+
+                <h3>
+                    {{ product.name }}
+                </h3>
+
+
+                <p class="product-description">
+                    {{ product.description }}
+                </p>
+
+
+                <div class="product-bottom">
+
+
+                    <!-- PRICE -->
+
+                    <span class="product-price">
+
+                        ₹{{ product.price }}
+
+                    </span>
+
+
+
+                    <!-- ADD TO CART -->
+
+                    {% if product.stock > 0 %}
+
+                        <a
+                            href="{% url 'add_to_cart' product.id %}"
+                            class="add-btn"
+                        >
+                            Add to Cart
+                        </a>
+
+                    {% else %}
+
+                        <span class="out-stock">
+                            Out of Stock
+                        </span>
+
+                    {% endif %}
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        {% empty %}
+
+
+        <!-- NO PRODUCTS -->
+
+        <div class="no-products">
+
+            <h3>
+                No Products Available
+            </h3>
+
+            <p>
+                Add products from Django Admin Panel.
+            </p>
+
+        </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================
+     FEATURES
+========================================= -->
+
+<section class="features-container">
+
+
+    <!-- FEATURE 1 -->
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            🚚
+        </div>
+
+        <h3>
+            Fast Delivery
+        </h3>
+
+        <p>
+            Get your products delivered
+            quickly to your doorstep.
+        </p>
+
+    </div>
+
+
+
+    <!-- FEATURE 2 -->
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            🔒
+        </div>
+
+        <h3>
+            Secure Payment
+        </h3>
+
+        <p>
+            Your payments and information
+            are completely secure.
+        </p>
+
+    </div>
+
+
+
+    <!-- FEATURE 3 -->
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            ⭐
+        </div>
+
+        <h3>
+            Quality Products
+        </h3>
+
+        <p>
+            We provide quality products
+            at great prices.
+        </p>
+
+    </div>
+
+
+
+    <!-- FEATURE 4 -->
+
+    <div class="feature-card">
+
+        <div class="feature-icon">
+            💬
+        </div>
+
+        <h3>
+            Customer Support
+        </h3>
+
+        <p>
+            Our support team is always
+            ready to help you.
+        </p>
+
+    </div>
+
+
+</section>
+
+
+{% endblock %}
