@@ -9,82 +9,94 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>My Store</title>
+    <title>
+        My Store
+    </title>
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 </head>
 
+
 <body>
+
 
 <!-- =========================
      NAVBAR
 ========================= -->
 
-<nav class="navbar">
+<header>
 
-    <div class="navbar-container">
+    <nav>
 
-        <!-- LOGO LEFT -->
+        <!-- LOGO -->
 
-        <a href="{% url 'home' %}" class="navbar-logo">
+        <a href="{% url 'home' %}">
+            My Store
+        </a>
 
-            <div class="logo-icon">
-                🛍️
-            </div>
 
-            <span>My Store</span>
+        <!-- NAV LINKS -->
+
+        <a href="{% url 'home' %}">
+            Home
+        </a>
+
+
+        <a href="{% url 'home' %}#products">
+            Products
+        </a>
+
+
+        <!-- CART -->
+
+        <a href="{% url 'cart' %}">
+            Cart
+
+            {% if cart_count > 0 %}
+                <sup>{{ cart_count }}</sup>
+            {% endif %}
 
         </a>
 
 
-        <!-- LINKS RIGHT -->
+        <!-- ORDERS -->
 
-        <div class="navbar-links">
+        <a href="{% url 'orders' %}">
+            Orders
+        </a>
 
-            <a href="{% url 'home' %}">
-                Home
-            </a>
 
-            <a href="{% url 'home' %}#products">
-                Products
-            </a>
+        <!-- LOGOUT -->
 
-            <a href="{% url 'cart' %}" class="cart-link">
+        <a href="{% url 'logout' %}">
+            Logout
+        </a>
 
-                Cart
+    </nav>
 
-                {% with cart=request.session.cart %}
-
-                    {% if cart %}
-
-                        <span class="cart-count">
-                            {{ cart|length }}
-                        </span>
-
-                    {% endif %}
-
-                {% endwith %}
-
-            </a>
-
-            <a href="{% url 'orders' %}">
-                Orders
-            </a>
-
-            <a href="{% url 'logout' %}">
-                Logout
-            </a>
-
-        </div>
-
-    </div>
-
-</nav>
+</header>
 
 
 <!-- =========================
-     CONTENT
+     MESSAGES
+========================= -->
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div class="message {{ message.tags }}">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+
+<!-- =========================
+     MAIN CONTENT
 ========================= -->
 
 <main>
@@ -95,6 +107,21 @@
 
 </main>
 
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    <p>
+        © 2026 My Store. All Rights Reserved.
+    </p>
+
+</footer>
+
+
+<script src="{% static 'js/script.js' %}"></script>
 
 </body>
 
