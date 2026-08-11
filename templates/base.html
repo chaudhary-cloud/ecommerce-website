@@ -9,10 +9,24 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>
-        My Store
-    </title>
+    <title>My Store</title>
 
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Font Awesome Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <!-- Your CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 </head>
@@ -25,57 +39,147 @@
      NAVBAR
 ========================= -->
 
-<header>
+<header class="main-navbar">
 
-    <nav>
+    <nav class="navbar-container">
+
 
         <!-- LOGO -->
 
-        <a href="{% url 'home' %}">
-            My Store
+        <a href="{% url 'home' %}" class="store-logo">
+
+            <span class="logo-icon">
+                <i class="fa-solid fa-bag-shopping"></i>
+            </span>
+
+            <span class="logo-text">
+                My <strong>Store</strong>
+            </span>
+
         </a>
 
 
-        <!-- NAV LINKS -->
 
-        <a href="{% url 'home' %}">
-            Home
-        </a>
+        <!-- LEFT / CENTER NAVIGATION -->
+
+        <div class="navbar-links">
+
+            <a href="{% url 'home' %}" class="nav-item">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </a>
 
 
-        <a href="{% url 'home' %}#products">
-            Products
-        </a>
+            <a href="{% url 'home' %}#products" class="nav-item">
+                <i class="fa-solid fa-store"></i>
+                <span>Products</span>
+            </a>
 
 
-        <!-- CART -->
+            <a href="{% url 'cart' %}" class="nav-item cart-link">
 
-        <a href="{% url 'cart' %}">
-            Cart
+                <span class="cart-wrapper">
 
-            {% if cart_count > 0 %}
-                <sup>{{ cart_count }}</sup>
+                    <i class="fa-solid fa-cart-shopping"></i>
+
+                    {% if cart_count > 0 %}
+                        <span class="cart-badge">
+                            {{ cart_count }}
+                        </span>
+                    {% endif %}
+
+                </span>
+
+                <span>Cart</span>
+
+            </a>
+
+
+            <a href="{% url 'orders' %}" class="nav-item">
+
+                <i class="fa-solid fa-box-open"></i>
+
+                <span>Orders</span>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- RIGHT SIDE AUTH BUTTONS -->
+
+        <div class="navbar-auth">
+
+
+            {% if user.is_authenticated %}
+
+
+                <!-- USER -->
+
+                <div class="navbar-user">
+
+                    <div class="user-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+
+                    <div class="user-text">
+
+                        <small>Welcome</small>
+
+                        <strong>{{ user.username }}</strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOGOUT -->
+
+                <a href="{% url 'logout' %}" class="logout-button">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Logout
+
+                </a>
+
+
+            {% else %}
+
+
+                <!-- LOGIN -->
+
+                <a href="{% url 'login' %}" class="login-button">
+
+                    <i class="fa-solid fa-right-to-bracket"></i>
+
+                    <span>Login</span>
+
+                </a>
+
+
+                <!-- REGISTER -->
+
+                <a href="{% url 'register' %}" class="register-button">
+
+                    <i class="fa-solid fa-user-plus"></i>
+
+                    <span>Register</span>
+
+                </a>
+
+
             {% endif %}
 
-        </a>
 
+        </div>
 
-        <!-- ORDERS -->
-
-        <a href="{% url 'orders' %}">
-            Orders
-        </a>
-
-
-        <!-- LOGOUT -->
-
-        <a href="{% url 'logout' %}">
-            Logout
-        </a>
 
     </nav>
 
 </header>
+
 
 
 <!-- =========================
@@ -95,6 +199,7 @@
 {% endif %}
 
 
+
 <!-- =========================
      MAIN CONTENT
 ========================= -->
@@ -108,6 +213,7 @@
 </main>
 
 
+
 <!-- =========================
      FOOTER
 ========================= -->
@@ -119,6 +225,7 @@
     </p>
 
 </footer>
+
 
 
 <script src="{% static 'js/script.js' %}"></script>

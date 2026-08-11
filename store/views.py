@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib import messages
 
 from .models import Product, Order, OrderItem
@@ -30,28 +31,164 @@ def home(request):
 
 
 # =====================================================
+# REGISTER
+# =====================================================
+
+def register_view(request):
+
+    if request.user.is_authenticated:
+        return redirect("home")
+
+    if request.method == "POST":
+
+        username = request.POST.get("username", "").strip()
+        email = request.POST.get("email", "").strip()
+        password = request.POST.get("password", "")
+        confirm_password = request.POST.get(
+            "confirm_password",
+            ""
+        )
+
+        if not username or not email or not password:
+            messages.error(
+                request,
+                "Please fill all required fields."
+            )
+
+            return render(
+                request,
+                "register.html"
+            )
+
+        if password != confirm_password:
+
+            messages.error(
+                request,
+                "Passwords do not match."
+            )
+
+            return render(
+                request,
+                "register.html"
+            )
+
+        if User.objects.filter(
+            username=username
+        ).exists():
+
+            messages.error(
+                request,
+                "Username already exists."
+            )
+
+            return render(
+                request,
+                "register.html"
+            )
+
+        if User.objects.filter(
+            email=email
+        ).exists():
+
+            messages.error(
+                request,
+                "Email is already registered."
+            )
+
+            return render(
+                request,
+                "register.html"
+            )
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        user.save()
+
+        messages.success(
+            request,
+            "Account created successfully! Please login."
+        )
+
+        return redirect("login")
+
+    return render(
+        request,
+        "register.html"
+    )
+
+
+# =====================================================
+# LOGIN
+# =====================================================
+
+def login_view(request):
+
+    if request.user.is_authenticated:
+        return redirect("home")
+
+    if request.method == "POST":
+
+        username = request.POST.get(
+            "username",
+            ""
+        ).strip()
+
+        password = request.POST.get(
+            "password",
+            ""
+        )
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        if user is not None:
+
+            login(
+                request,
+                user
+            )
+
+            messages.success(
+                request,
+                f"Welcome back, {user.username}!"
+            )
+
+            return redirect("home")
+
+        messages.error(
+            request,
+            "Invalid username or password."
+        )
+
+    return render(
+        request,
+        "login.html"
+    )
+
+
+# =====================================================
 # ADD TO CART
 # =====================================================
 
 def add_to_cart(request, product_id):
 
-    product = Product.objects.get(id=product_id)
+    product = Product.objects.get(
+        id=product_id
+    )
 
-    cart = request.session.get("cart", {})
+    cart = request.session.get(
+        "cart",
+        {}
+    )
 
     product_id = str(product_id)
-
-    current_quantity = cart.get(product_id, 0)
-
-    # Check stock
-    if current_quantity >= product.stock:
-
-        messages.error(
-            request,
-            "Sorry, this product is out of stock."
-        )
-
-        return redirect("home")
 
     if product_id in cart:
 
@@ -62,6 +199,7 @@ def add_to_cart(request, product_id):
         cart[product_id] = 1
 
     request.session["cart"] = cart
+
     request.session.modified = True
 
     messages.success(
@@ -103,19 +241,6 @@ def cart(request):
 
             continue
 
-        # If cart quantity is greater than available stock
-        if quantity > product.stock:
-
-            quantity = product.stock
-
-            if quantity <= 0:
-
-                del cart_data[product_id]
-
-                continue
-
-            cart_data[product_id] = quantity
-
         item_total = (
             product.price * quantity
         )
@@ -131,6 +256,7 @@ def cart(request):
         total += item_total
 
     request.session["cart"] = cart_data
+
     request.session.modified = True
 
     return render(
@@ -147,7 +273,10 @@ def cart(request):
 # REMOVE FROM CART
 # =====================================================
 
-def remove_from_cart(request, product_id):
+def remove_from_cart(
+    request,
+    product_id
+):
 
     cart = request.session.get(
         "cart",
@@ -161,6 +290,7 @@ def remove_from_cart(request, product_id):
         del cart[product_id]
 
         request.session["cart"] = cart
+
         request.session.modified = True
 
         messages.success(
@@ -175,7 +305,10 @@ def remove_from_cart(request, product_id):
 # INCREASE QUANTITY
 # =====================================================
 
-def increase_quantity(request, product_id):
+def increase_quantity(
+    request,
+    product_id
+):
 
     cart = request.session.get(
         "cart",
@@ -186,28 +319,10 @@ def increase_quantity(request, product_id):
 
     if product_id in cart:
 
-        try:
-
-            product = Product.objects.get(
-                id=product_id
-            )
-
-            if cart[product_id] < product.stock:
-
-                cart[product_id] += 1
-
-            else:
-
-                messages.error(
-                    request,
-                    "No more stock available."
-                )
-
-        except Product.DoesNotExist:
-
-            del cart[product_id]
+        cart[product_id] += 1
 
     request.session["cart"] = cart
+
     request.session.modified = True
 
     return redirect("cart")
@@ -217,7 +332,10 @@ def increase_quantity(request, product_id):
 # DECREASE QUANTITY
 # =====================================================
 
-def decrease_quantity(request, product_id):
+def decrease_quantity(
+    request,
+    product_id
+):
 
     cart = request.session.get(
         "cart",
@@ -237,6 +355,7 @@ def decrease_quantity(request, product_id):
             del cart[product_id]
 
     request.session["cart"] = cart
+
     request.session.modified = True
 
     return redirect("cart")
@@ -273,22 +392,6 @@ def checkout(request):
 
             continue
 
-        # Check stock before checkout
-        if quantity > product.stock:
-
-            messages.error(
-                request,
-                f"Only {product.stock} item(s) of "
-                f"{product.name} are available."
-            )
-
-            cart_data[product_id] = product.stock
-
-            request.session["cart"] = cart_data
-            request.session.modified = True
-
-            return redirect("cart")
-
         item_total = (
             product.price * quantity
         )
@@ -304,87 +407,94 @@ def checkout(request):
         total += item_total
 
     request.session["cart"] = cart_data
+
     request.session.modified = True
 
-    # Empty cart
     if not cart_items:
 
         return redirect("home")
 
-    # =================================================
+    # =============================================
     # PLACE ORDER
-    # =================================================
+    # =============================================
 
     if request.method == "POST":
 
         customer_name = request.POST.get(
-            "name"
-        )
+            "name",
+            ""
+        ).strip()
 
         email = request.POST.get(
-            "email"
-        )
+            "email",
+            ""
+        ).strip()
 
         phone = request.POST.get(
-            "phone"
-        )
+            "phone",
+            ""
+        ).strip()
 
         address = request.POST.get(
-            "address"
-        )
+            "address",
+            ""
+        ).strip()
 
         city = request.POST.get(
-            "city"
-        )
+            "city",
+            ""
+        ).strip()
 
         pincode = request.POST.get(
-            "pincode"
-        )
+            "pincode",
+            ""
+        ).strip()
 
-        # Create Order
+        if not all(
+            [
+                customer_name,
+                email,
+                phone,
+                address,
+                city,
+                pincode,
+            ]
+        ):
+
+            messages.error(
+                request,
+                "Please fill all customer details."
+            )
+
+            return render(
+                request,
+                "checkout.html",
+                {
+                    "cart_items": cart_items,
+                    "total": total,
+                }
+            )
+
         order = Order.objects.create(
-
             customer_name=customer_name,
-
             email=email,
-
             phone=phone,
-
             address=address,
-
             city=city,
-
             pincode=pincode,
-
             total_amount=total,
         )
 
-        # Create Order Items
         for item in cart_items:
 
-            product = item["product"]
-
-            quantity = item["quantity"]
-
             OrderItem.objects.create(
-
                 order=order,
-
-                product=product,
-
-                quantity=quantity,
-
-                price=product.price,
-
+                product=item["product"],
+                quantity=item["quantity"],
+                price=item["product"].price,
                 item_total=item["item_total"],
             )
 
-            # Decrease product stock
-            product.stock -= quantity
-
-            product.save()
-
-        # Empty cart
         request.session["cart"] = {}
 
         request.session.modified = True
@@ -396,7 +506,6 @@ def checkout(request):
 
         return redirect("orders")
 
-    # Checkout page
     return render(
         request,
         "checkout.html",
@@ -413,7 +522,22 @@ def checkout(request):
 
 def orders(request):
 
-    orders = Order.objects.all().order_by(
+    if not request.user.is_authenticated:
+
+        messages.info(
+            request,
+            "Please login to view your orders."
+        )
+
+        return redirect("login")
+
+    user_email = request.user.email
+
+    orders_data = Order.objects.filter(
+        email=user_email
+    ).prefetch_related(
+        "items__product"
+    ).order_by(
         "-created_at"
     )
 
@@ -421,7 +545,7 @@ def orders(request):
         request,
         "orders.html",
         {
-            "orders": orders
+            "orders": orders_data
         }
     )
 
@@ -433,5 +557,10 @@ def orders(request):
 def logout_view(request):
 
     logout(request)
+
+    messages.success(
+        request,
+        "You have been logged out successfully."
+    )
 
     return redirect("home")

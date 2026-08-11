@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.urls import path
-
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -9,31 +8,39 @@ from store import views
 
 urlpatterns = [
 
-    # =========================
-    # ADMIN
-    # =========================
-
+    # Admin
     path(
         "admin/",
         admin.site.urls
     ),
 
-
-    # =========================
-    # HOME
-    # =========================
-
+    # Home
     path(
         "",
         views.home,
         name="home"
     ),
 
+    # Authentication
+    path(
+        "register/",
+        views.register_view,
+        name="register"
+    ),
 
-    # =========================
-    # CART
-    # =========================
+    path(
+        "login/",
+        views.login_view,
+        name="login"
+    ),
 
+    path(
+        "logout/",
+        views.logout_view,
+        name="logout"
+    ),
+
+    # Cart
     path(
         "cart/",
         views.cart,
@@ -64,45 +71,21 @@ urlpatterns = [
         name="decrease_quantity"
     ),
 
-
-    # =========================
-    # CHECKOUT
-    # =========================
-
+    # Checkout
     path(
         "checkout/",
         views.checkout,
         name="checkout"
     ),
 
-
-    # =========================
-    # ORDERS
-    # =========================
-
+    # Orders
     path(
         "orders/",
         views.orders,
         name="orders"
     ),
-
-
-    # =========================
-    # LOGOUT
-    # =========================
-
-    path(
-        "logout/",
-        views.logout_view,
-        name="logout"
-    ),
-
 ]
 
-
-# =========================
-# MEDIA FILES
-# =========================
 
 if settings.DEBUG:
 

@@ -1,54 +1,37 @@
 from django.urls import path
+
 from . import views
+
 
 urlpatterns = [
 
+    # =========================================
     # HOME
-    path("", views.home, name="home"),
+    # =========================================
 
-    # ADD TO CART
     path(
-        "cart/add/<int:product_id>/",
-        views.add_to_cart,
-        name="add_to_cart"
+        "",
+        views.home,
+        name="home"
     ),
 
-    # CART
+
+    # =========================================
+    # AUTHENTICATION
+    # =========================================
+
     path(
-        "cart/",
-        views.cart,
-        name="cart"
+        "register/",
+        views.register_view,
+        name="register"
     ),
 
-    # REMOVE FROM CART
     path(
-        "cart/remove/<int:product_id>/",
-        views.remove_from_cart,
-        name="remove_from_cart"
+        "login/",
+        views.login_view,
+        name="login"
     ),
 
-    # INCREASE QUANTITY
-    path(
-        "cart/increase/<int:product_id>/",
-        views.increase_quantity,
-        name="increase_quantity"
-    ),
-
-    # DECREASE QUANTITY
-    path(
-        "cart/decrease/<int:product_id>/",
-        views.decrease_quantity,
-        name="decrease_quantity"
-    ),
-
-    # ORDERS
-    path(
-        "orders/",
-        views.orders,
-        name="orders"
-    ),
-
-    # LOGOUT
     path(
         "logout/",
         views.logout_view,
@@ -56,9 +39,59 @@ urlpatterns = [
     ),
 
 
+    # =========================================
+    # CART
+    # =========================================
+
     path(
-    "checkout/",
-    views.checkout,
-    name="checkout"
-),
+        "cart/",
+        views.cart,
+        name="cart"
+    ),
+
+    path(
+        "cart/add/<int:product_id>/",
+        views.add_to_cart,
+        name="add_to_cart"
+    ),
+
+    path(
+        "cart/remove/<int:product_id>/",
+        views.remove_from_cart,
+        name="remove_from_cart"
+    ),
+
+    path(
+        "cart/increase/<int:product_id>/",
+        views.increase_quantity,
+        name="increase_quantity"
+    ),
+
+    path(
+        "cart/decrease/<int:product_id>/",
+        views.decrease_quantity,
+        name="decrease_quantity"
+    ),
+
+
+    # =========================================
+    # CHECKOUT
+    # =========================================
+
+    path(
+        "checkout/",
+        views.checkout,
+        name="checkout"
+    ),
+
+
+    # =========================================
+    # ORDERS
+    # =========================================
+
+    path(
+        "orders/",
+        views.orders,
+        name="orders"
+    ),
 ]
